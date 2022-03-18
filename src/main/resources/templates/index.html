@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ai Studio</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- import Vue before Element -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <div style="display: flex; justify-content: center; font-weight: bold; font-size: 30px; position: relative; top: 30px; align-content: center; flex-direction: column; align-items: flex-start; flex-wrap: wrap; border: 1px solid #FFF; width:620px;margin:0 auto">
+        <span style="color: cadetblue;font-size: 21px;margin: 20px auto" title="小demo小demo小demo小demo小demo小demo">基于百度智能云API的图片文字识别小demo</span>
+        <el-tabs v-model="activeName" type="border-card" style="width: 800px;">
+            <el-tab-pane label="图片文字识别" name="tupianwenzishibie">
+                <el-upload
+                        style="width: 50%"
+                        action="/picToWord"
+                        :on-remove="handleRemove1"
+                        :file-list="fileList"
+                        list-type="picture"
+                        :on-success="handleAvatarSuccess1"
+                >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                </el-upload>
+                <span style="font-size: 1px; color: red;position: absolute; top: 41px; left: 100px">只能上传jpg/png文件，且不超过500kb</span>
+                <el-input
+                        style="margin-top: 50px"
+                        type="textarea"
+                        :rows="10"
+                        placeholder="结果展示在这里"
+                        v-model="words"
+                ></el-input>
+            </el-tab-pane>
+
+            <el-tab-pane label="图片内容识别" name="tupianwenzishibie1">
+                <el-upload
+                        style="width: 50%"
+                        action="/imgRecognition"
+                        :on-remove="handleRemove2"
+                        :file-list="fileList"
+                        list-type="picture"
+                        :on-success="handleAvatarSuccess2"
+                >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                </el-upload>
+                <span style="font-size: 1px; color: red;position: absolute; top: 41px; left: 100px">只能上传jpg/png文件，且不超过500kb</span>
+                <el-empty description="空空如也" v-if="isShow"></el-empty>
+                <div v-for="item in container" :key="item">
+                    <p>类别：{{item.root}} 关键字：{{item.keyword}} 概率：{{item.score * 100}}%</p>
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="语音识别" name="tupianwenzishibie2">
+                <el-empty description="暂未开发"></el-empty>
+            </el-tab-pane>
+            <el-tab-pane label="人脸识别" name="tupianwenzishibie3">
+                <el-empty description="暂未开发"></el-empty>
+            </el-tab-pane>
+        </el-tabs>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            isShow: true,
+            fileList: [],
+            activeName: 'tupianwenzishibie',
+            url: '',
+            words: '',
+            container: []
+        },
+        methods: {
+            handleAvatarSuccess1(res, file) {
+                this.words = res;
+            },
+            handleRemove1(file, fileList) {
+                this.words = '';
+            }, handleAvatarSuccess2(res, file) {
+                this.container = res.result;
+                this.isShow = false;
+            },
+            handleRemove2(file, fileList) {
+                this.container = [];
+                this.isShow = true;
+            }
+        }
+    })
+</script>
+
+</html>
